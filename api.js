@@ -15,9 +15,8 @@ module.exports = {
 
     'PUT /api/article/:id': async (ctx, next) => {
         ctx.res.type = 'application/json';
-        let {title, text_origin} = ctx.request.body;
-        let p = {title, text_origin};
-        let res = await db.updateById(db.ModelNameCfg.ARTICLE, ctx.params.id, p)
+        let {title, text_origin, lastEditTime} = ctx.request.body;
+        let res = await db.updateById(db.ModelNameCfg.ARTICLE, ctx.params.id, {title, text_origin, lastEditTime})
         ctx.body = res;
     },
 
@@ -29,10 +28,8 @@ module.exports = {
     },
     
     'POST /api/article': async (ctx, next) => {
-        let {title, text_origin, owner} = ctx.request.body
-        let p = {title, text_origin, owner};
-
-        let data = await db.insert(db.ModelNameCfg.ARTICLE, p);
+        let {title, text_origin, owner, writeTime} = ctx.request.body
+        let data = await db.insert(db.ModelNameCfg.ARTICLE, {title, text_origin, owner, writeTime});
         ctx.body = data
     },
 
