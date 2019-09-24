@@ -59,6 +59,14 @@ module.exports = {
     'GET /api/logout': async (ctx) => {
         ctx.session = null;
         ctx.body = 'suc'
+    },
+
+    'GET /api/checkExist': async(ctx)=>{
+        let {data} = ctx.query;
+        data=JSON.parse(data)
+        console.log('GET /api/checkExist data = ', data)
+        let res = await db.findOne(db.ModelNameCfg.USER, data)
+        ctx.body = res
     }
 
 }

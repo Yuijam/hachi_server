@@ -5,6 +5,7 @@ var userSchema = new Schema({
     username:String,
     email:String,
     password:String,
+    registerOrder:Number,
     registerTime:String
 })
 
