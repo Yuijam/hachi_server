@@ -20,57 +20,87 @@ class DB{
     }
 
     findById(model, id){
-        if (model){
-            return model.findById(id);
-        }else{
-            console.log('model name  is not exist')
-            return []
-        }
+        return new Promise((resolve, reject) => {
+            model.findById(id, (err, res) => {
+                if (!err){
+                    resolve(res)
+                }else{
+                    reject(err)
+                }
+            })
+        })
     }
     
     find(model, json){
-        if (model){
-            return model.find(json);
-        }else{
-            console.log(`model is not exist`)
-            return []
-        }
+        return new Promise((resolve, reject) => {
+            model.find(json, (err, res) => {
+                if (!err){
+                    resolve(res)
+                }else{
+                    reject(err)
+                }
+            })
+        })
     }
 
     findOne(model, json){
-        if (model){
-            return model.findOne(json);
-        }else{
-            console.log(`model is not exist`)
-            return []
-        }
+        return new Promise((resolve, reject)=>{
+            model.findOne(json, (err, res) => {
+                if (!err){
+                    resolve(res)
+                }else{
+                    reject(err)
+                }
+            })
+        })
     }
     
     updateById(model, id, json){
-        if (model){
-            return model.updateOne({_id:id}, json);
-        }else{
-            console.log('model name is not exist')
-            return []
-        }
+        return new Promise((resolve, reject)=>{
+            model.updateOne({_id:id}, json, (err, res)=>{
+                if (!err){
+                    resolve(res)
+                }else{
+                    reject(err)
+                }
+            });
+        })
     }
 
     update(model, json1, json2){
-        if (model){
-            return model.updateOne(json1, json2);
-        }else{
-            console.log('model name is not exist')
-            return []
-        }
+        return new Promise((resolve, reject) => {
+            model.updateOne(json1, json2, (err, res) => {
+                if (!err){
+                    resolve(res)
+                }else{
+                    reject(err)
+                }
+            })
+        })
     }
     
     insert(model, json){
-        if (model){
-            return model.create(json);
-        }else{
-            console.log('model name is not exist')
-            return []
-        }
+        return new Promise((resolve, reject)=>{
+            model.create(json, (err, res) => {
+                if (!err){
+                    resolve(res)
+                }else{
+                    reject(err)
+                }
+            })
+        })
+    }
+
+    count(model, json){
+        return new Promise((resolve, reject) => {
+            model.countDocuments(json, (err, c)=>{
+                if (!err){
+                    resolve(c)
+                }else{
+                    reject(err)
+                }
+            })
+        })
     }
     
     removeById(model, id){

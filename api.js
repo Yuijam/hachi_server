@@ -1,4 +1,8 @@
 const db = require('../db/db');
+const Tools = require('../tools')
+
+const tools = new Tools(db)
+const articleNumPerPage = 10;
 
 module.exports = {
     'GET /session': async (ctx, next) => {
@@ -40,10 +44,15 @@ module.exports = {
 
     'POST /api/register': async (ctx)=>{
         let {username, email, password, registerTime} = ctx.request.body;
-        // let result = await db.find('users', {username:username})
-        let res = await db.insert(db.ModelNameCfg.USER, {username, email, password, registerTime});
-        console.log('res = ', res)
-        ctx.body = res;
+        try{
+            await Promise.all([tools.checkUsername(username), tools.checkEmail(email)])
+            let count = await db.count(db.ModelNameCfg.USER, {})
+            let res = await db.insert(db.ModelNameCfg.USER, {username, email, password, registerTime, registerOrder:count+1})
+            ctx.body = res
+        }catch(err){
+            ctx.body = err
+        }
+        
     },
 
     'POST /api/login': async (ctx) => {
@@ -67,6 +76,27 @@ module.exports = {
         console.log('GET /api/checkExist data = ', data)
         let res = await db.findOne(db.ModelNameCfg.USER, data)
         ctx.body = res
-    }
+    },
+
+    'GET /api/page': async(ctx) => {
+        console.log('ctx.query = ', ctx.query)
+        let queryPage = ctx.query.curPage
+        console.log('queryPage = ', queryPage)
+        let articles = await db.find(db.ModelNameCfg.ARTICLE, {owner:ctx.query.username});
+        let num = articles.length;
+        console.log('num = ', num)
+        let startIdx = (queryPage-1) * articleNumPerPage
+        console.log('startidx = ', startIdx)
+        if (startIdx < num){
+            ctx.body = articles.slice(startIdx, startIdx+articleNumPerPage)
+        }else{
+            ctx.body = []
+        }
+    },
+
+    'GET /api/articlesCount': async(ctx) => {
+        let totalCount = await db.count(db.ModelNameCfg.ARTICLE, {owner:ctx.query.username});
+        ctx.body = totalCount
+    } 
 
 }
