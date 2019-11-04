@@ -32,8 +32,11 @@ module.exports = {
     },
     
     'POST /api/article': async (ctx, next) => {
-        let {title, text_origin, owner, writeTime} = ctx.request.body
-        let data = await db.insert(db.ModelNameCfg.ARTICLE, {title, text_origin, owner, writeTime});
+        let {owner} = ctx.request.body
+        let data = await db.insert(db.ModelNameCfg.ARTICLE, ctx.request.body);
+        let articleCount = await db.count(db.ModelNameCfg.ARTICLE, {owner})
+        console.log('wwwwwww articleCount' , articleCount)
+        db.update(db.ModelNameCfg.USER, {username:owner}, {articleCount});
         ctx.body = data
     },
 
@@ -97,6 +100,57 @@ module.exports = {
     'GET /api/articlesCount': async(ctx) => {
         let totalCount = await db.count(db.ModelNameCfg.ARTICLE, {owner:ctx.query.username});
         ctx.body = totalCount
-    } 
+    },
 
+    'PUT /api/follow': async(ctx) => {
+        let {actionUsername, targetUsername} = ctx.request.body;
+        console.log('PUT /api/follow ', actionUsername, targetUsername)
+        
+        let actionUser = (await db.findOne(db.ModelNameCfg.USER, {username:actionUsername})).toObject();
+        actionUser.following.push(targetUsername)
+        console.log('actionUser ', actionUser)
+        
+        let targetUser = (await db.findOne(db.ModelNameCfg.USER, {username:targetUsername})).toObject();
+        targetUser.followers.push(actionUsername)
+
+        let res1 = await db.update(db.ModelNameCfg.USER, {username:actionUsername}, {...actionUser});
+        let res2 = await db.update(db.ModelNameCfg.USER, {username:targetUsername}, {...targetUser});
+        ctx.body = {actionUser, targetUser}
+    },
+
+    'PUT /api/unfollow': async(ctx) => {
+        let {actionUsername, targetUsername} = ctx.request.body;
+        console.log('PUT /api/unfollow ', actionUsername, targetUsername)
+        
+        let actionUser = (await db.findOne(db.ModelNameCfg.USER, {username:actionUsername})).toObject();
+        actionUser.following.splice(actionUser.following.indexOf(targetUsername), 1)
+        console.log('actionUser ', actionUser)
+        
+        let targetUser = (await db.findOne(db.ModelNameCfg.USER, {username:targetUsername})).toObject();
+        targetUser.followers.splice(targetUser.followers.indexOf(actionUsername), 1)
+
+        let res1 = await db.update(db.ModelNameCfg.USER, {username:actionUsername}, {...actionUser});
+        let res2 = await db.update(db.ModelNameCfg.USER, {username:targetUsername}, {...targetUser});
+        ctx.body = {actionUser, targetUser}
+    },
+
+    'GET /api/user': async(ctx) => {
+        let {actionUsername, targetUsername} = ctx.query;
+        console.log('wwwwwwwwww', actionUsername, targetUsername)
+        let user = await db.findOne(db.ModelNameCfg.USER, {username:targetUsername});
+        user = user.toObject();
+        delete user.email
+        delete user.password
+        
+        user.followed = false
+        for (let follower of user.followers){
+            console.log(follower, actionUsername)
+            if (follower === actionUsername){
+                user.followed = true
+                break;
+            }
+        }
+        console.log('GET /api/user', user)
+        ctx.body = user;
+    }
 }

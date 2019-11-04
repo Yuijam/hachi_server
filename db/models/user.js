@@ -6,7 +6,11 @@ var userSchema = new Schema({
     email:String,
     password:String,
     registerOrder:Number,
-    registerTime:String
+    registerTime:String,
+    followers:[],
+    following:[],
+    articleCount:0,
+    followed:Boolean
 })
 
 module.exports = mongoose.model('user', userSchema)
