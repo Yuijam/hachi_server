@@ -1,7 +1,6 @@
 require('./mgose_conn')
 const User = require('./models/user')
 const Article = require('./models/article')
-const UserPublic = require('./models/userPublic')
 
 class DB{
 
