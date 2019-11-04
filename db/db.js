@@ -16,7 +16,6 @@ class DB{
         this.ModelNameCfg = {
             USER:User,
             ARTICLE:Article,
-            USER_PUBLIC:UserPublic
         }
     }
 
