@@ -1,10 +1,16 @@
+function registerErr(field, value, msg){
+    this.field = field
+    this.value = value
+    this.msg = msg
+}
+
 class Tools {
     constructor(db){
         this.db = db
         this.msgStr = {
             done:'done',
-            usernameIsExist: 'usernameIsExist',
-            emailIsExist:'emailIsExist',
+            usernameIsExist: 'username is exist',
+            emailIsExist: 'email is exist',
         }
     }
 
@@ -24,11 +30,11 @@ class Tools {
     }
 
     checkUsername(username){
-        return this.checkRegistInfo(this.db.ModelNameCfg.USER, {'username': username}, this.msgStr.usernameIsExist)
+        return this.checkRegistInfo(this.db.ModelNameCfg.USER, {'username': username}, new registerErr('username', username, this.msgStr.usernameIsExist))
     }
 
     checkEmail(email){
-        return this.checkRegistInfo(this.db.ModelNameCfg.USER, {'email': email}, this.msgStr.emailIsExist)
+        return this.checkRegistInfo(this.db.ModelNameCfg.USER, {'email': email}, new registerErr('email', email, this.msgStr.emailIsExist))
     }
 }
 
