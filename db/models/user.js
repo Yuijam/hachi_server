@@ -14,7 +14,11 @@ var userSchema = new Schema({
       default:0
     },
     followed:Boolean,
-    avatar:String
+    avatar:String,
+    location:String,
+    gender:String,
+    birthday:String,
+    description:String
 })
 
 module.exports = mongoose.model('user', userSchema)

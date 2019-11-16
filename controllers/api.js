@@ -218,9 +218,10 @@ module.exports = {
     let { actionUsername, targetUsername } = ctx.query;
     try {
       let user = await db.findOne(db.ModelNameCfg.USER, { username: targetUsername });
-      user = user.toObject();
-      delete user.email
-      delete user.password
+      // user = user.toObject();
+      // delete user.email
+      // delete user.password
+      console.log('GET /api/user 1', user)
 
       user.followed = false
       for (let follower of user.followers) {
@@ -232,6 +233,19 @@ module.exports = {
       }
       console.log('GET /api/user', user)
       ctx.body = new response(user);
+    } catch (err) {
+      ctx.body = new errorRes(err)
+    }
+  },
+
+  'PUT /api/user': async (ctx) => {
+    console.log('PUT /api/user', ctx.request.body)
+    let {username} = ctx.request.body;
+    try {
+      let res = await db.update(db.ModelNameCfg.USER, { username }, ctx.request.body)
+      console.log('PUT /api/user', res)
+      // let user = await db.findOne(db.ModelNameCfg.USER, { username });
+      ctx.body = new response(res);
     } catch (err) {
       ctx.body = new errorRes(err)
     }
