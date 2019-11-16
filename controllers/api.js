@@ -76,13 +76,14 @@ module.exports = {
     const { username, pageIdx, pageSize } = ctx.query
     try {
       let data = await db.find(db.ModelNameCfg.ARTICLE, { owner: username });
+      let count = data.length
       data.reverse()
       let user = await db.findOne(db.ModelNameCfg.USER, {username});
       data = pageFilter(data, pageIdx, pageSize * 1)
       data.map(item => {
         item.avatar = user.avatar
       })
-      ctx.body = new response({ articles: data, total: data.length });
+      ctx.body = new response({ articles: data, total: count });
     } catch (err) {
       ctx.body = new errorRes(err);
     }
@@ -213,6 +214,7 @@ module.exports = {
   },
 
   'GET /api/user': async (ctx) => {
+    console.log('GET /api/user', ctx.query)
     let { actionUsername, targetUsername } = ctx.query;
     try {
       let user = await db.findOne(db.ModelNameCfg.USER, { username: targetUsername });
@@ -284,5 +286,32 @@ module.exports = {
         }
       }
     })
+  },
+
+  'GET /api/timeline': async(ctx) => {
+    const { username, pageIdx, pageSize } = ctx.query
+    console.log('GET /api/timeline', ctx.query)
+    try{
+      let user = await db.findOne(db.ModelNameCfg.USER, { username })
+      let followingUser = await db.find(db.ModelNameCfg.USER, { username:{$in:user.following} })
+      let m = {}
+      for (let u of followingUser){
+        m[u.username] = u.avatar
+      }
+
+      let data = await db.find(db.ModelNameCfg.ARTICLE, {owner:{$in:user.following}});
+      let count = data.length
+      data.reverse()
+      data = pageFilter(data, pageIdx, pageSize * 1)
+      data.map(item => {
+        if (m[item.owner]){
+          item.avatar = m[item.owner]
+        }
+      })
+
+      ctx.body = new response({articles:data, total:count})
+    }catch(err){
+      ctx.body = new errorRes(err)
+    }
   }
 }
