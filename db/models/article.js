@@ -6,7 +6,8 @@ var articleSchema = new Schema({
     text_origin:String,
     writeTime:Number,
     lastEditTime:Number,
-    owner:String
+    owner:String,
+    avatar:String
 })
 
 module.exports = mongoose.model('article', articleSchema)

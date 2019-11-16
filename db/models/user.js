@@ -9,7 +9,10 @@ var userSchema = new Schema({
     registerTime:String,
     followers:[],
     following:[],
-    articleCount:0,
+    articleCount:{
+      type:Number,
+      default:0
+    },
     followed:Boolean,
     avatar:String
 })

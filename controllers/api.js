@@ -77,7 +77,12 @@ module.exports = {
     try {
       let data = await db.find(db.ModelNameCfg.ARTICLE, { owner: username });
       data.reverse()
-      ctx.body = new response({ articles: pageFilter(data, pageIdx, pageSize * 1), total: data.length });
+      let user = await db.findOne(db.ModelNameCfg.USER, {username});
+      data = pageFilter(data, pageIdx, pageSize * 1)
+      data.map(item => {
+        item.avatar = user.avatar
+      })
+      ctx.body = new response({ articles: data, total: data.length });
     } catch (err) {
       ctx.body = new errorRes(err);
     }
