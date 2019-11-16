@@ -10,7 +10,8 @@ var userSchema = new Schema({
     followers:[],
     following:[],
     articleCount:0,
-    followed:Boolean
+    followed:Boolean,
+    avatar:String
 })
 
 module.exports = mongoose.model('user', userSchema)

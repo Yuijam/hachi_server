@@ -1,5 +1,4 @@
 const fs = require('fs');
-
 // add url-route in /controllers:
 
 function addMapping(router, mapping) {
@@ -41,6 +40,7 @@ module.exports = function (dir) {
         controllers_dir = dir || 'controllers',
         router = require('koa-router')();
     addControllers(router, controllers_dir);
+    // require('./upload.js')(router)
     router.get('/*', async(ctx) => {
         console.log('url = ', ctx.req.url);
         ctx.type = 'html';
