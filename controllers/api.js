@@ -348,7 +348,13 @@ module.exports = {
     console.log('GET /api/comment', ctx.query)
     try{
       let comments = await db.find(db.ModelNameCfg.COMMENT, {article_id});
-      console.log()
+      await Promise.all(comments.map(async item => {
+        let user = await db.findOne(db.ModelNameCfg.USER, {username:item.author});
+        console.log(user.avatar)
+        item.avatar = user.avatar
+        return item
+      }))
+      console.log('GET /api/comment', comments)
       ctx.body = new response(comments)
     }catch(err){
       ctx.body = new errorRes(err)
