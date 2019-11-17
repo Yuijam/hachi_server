@@ -7,7 +7,8 @@ var articleSchema = new Schema({
     writeTime:Number,
     lastEditTime:Number,
     owner:String,
-    avatar:String
+    avatar:String,
+    comments:[]
 })
 
 module.exports = mongoose.model('article', articleSchema)

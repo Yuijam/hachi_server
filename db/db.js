@@ -1,6 +1,7 @@
 require('./mgose_conn')
 const User = require('./models/user')
 const Article = require('./models/article')
+const Comment = require('./models/comment')
 
 class DB{
 
@@ -16,6 +17,7 @@ class DB{
         this.ModelNameCfg = {
             USER:User,
             ARTICLE:Article,
+            COMMENT:Comment
         }
     }
 

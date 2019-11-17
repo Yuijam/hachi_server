@@ -327,5 +327,31 @@ module.exports = {
     }catch(err){
       ctx.body = new errorRes(err)
     }
+  },
+
+  'POST /api/comment': async(ctx) => {
+    const {article_id} = ctx.request.body
+    console.log('GET /api/comment', ctx.request.body)
+    try{
+      let comment = await db.insert(db.ModelNameCfg.COMMENT, ctx.request.body);
+      console.log('insert comment = ', comment)
+      let article = await db.update(db.ModelNameCfg.ARTICLE, { _id: article_id }, { comment: comment._id});
+      console.log('update article = ', article)
+      ctx.body = new response(article)
+    }catch(err){
+      ctx.body = new errorRes(err)
+    }
+  },
+
+  'GET /api/comment': async(ctx) => {
+    const {article_id} = ctx.query
+    console.log('GET /api/comment', ctx.query)
+    try{
+      let comments = await db.find(db.ModelNameCfg.COMMENT, {article_id});
+      console.log()
+      ctx.body = new response(comments)
+    }catch(err){
+      ctx.body = new errorRes(err)
+    }
   }
 }
