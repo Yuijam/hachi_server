@@ -58,9 +58,9 @@ module.exports = {
   'PUT /api/article': async (ctx, next) => {
     // ctx.res.type = 'application/json';
     console.log('PUT /api/article', ctx.request.body)
-    let { id, title, text_origin, lastEditTime } = ctx.request.body;
+    let { _id, title, text_origin, lastEditTime } = ctx.request.body;
     try {
-      let res = await db.updateById(db.ModelNameCfg.ARTICLE, id, { title, text_origin, lastEditTime })
+      let res = await db.updateById(db.ModelNameCfg.ARTICLE, _id, { title, text_origin, lastEditTime })
       if (res.ok === 1) {
         ctx.body = new response(ctx.request.body);
       } else {
